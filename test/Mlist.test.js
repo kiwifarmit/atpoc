@@ -42,41 +42,28 @@ contract('Mlist', (accounts) => {
 
     // pay
     it('It should pay 1 ETH to contract', async() => {
-        const one_eth = web3.utils.toWei('1', "ether");
+        const one_eth = web3.utils.toWei('1', "ether")
         const accounts = await web3.eth.getAccounts()
         const contract_address = await mList.getContractSelfAddress()
 
-        const balance_wei_before = await web3.eth.getBalance(contract_address);
-        const balance_ether_before = web3.utils.fromWei(balance_wei_before, "ether");
+        const balance_wei_before = await web3.eth.getBalance(contract_address)
+        const balance_ether_before = web3.utils.fromWei(balance_wei_before, "ether")
 
-        await web3.eth.sendTransaction({from: accounts[1], to: contract_address, value: one_eth});
+        await web3.eth.sendTransaction({from: accounts[1], to: contract_address, value: one_eth})
         const balance_wei_after = await web3.eth.getBalance(contract_address);
-        const balance_ether_after = web3.utils.fromWei(balance_wei_after, "ether");
+        const balance_ether_after = web3.utils.fromWei(balance_wei_after, "ether")
         console.log('balance_ether_before', balance_ether_before)
         console.log('balance_ether_after', balance_ether_after)
-        assert.equal(balance_ether_after, Number(balance_ether_before) + 1);
+        assert.equal(balance_ether_after, Number(balance_ether_before) + 1)
     })
 
-    // TODO
-    // https://trufflesuite.com/docs/truffle/getting-started/interacting-with-your-contracts#making-a-transaction
-    // truffle(develop)> let accounts = await web3.eth.getAccounts()
-    // truffle(develop)> instance.sendCoin(accounts[1], 10, {from: accounts[0]})
-
-    /*// send
-    it('should send 1 ether to the contract', async () => {
-        mList.send(web3.utils.toWei(1, "ether")).then(result => {
-            console.log(result)
-        })
-
-        // const balanceBefore = await mList.getBalance()
-        // console.log('balanceBefore', balanceBefore)
-        // const amount = 1
-        // const receiver = accounts[1]
-        // await mList.send(receiver, amount, {from: accounts[0]})
-        // const balanceAfter = await mList.getBalance()
-        // const balanceDifference = balanceAfter.toNumber() - balanceBefore.toNumber()
-        // assert.equal(balanceDifference, amount)
-    })*/
+    // sendAllToOwner
+    it("It should send the whole amount to the owner", async () => {
+        const send_result = await mList.sendAllToOwner({from: accounts[0]})
+        console.log('send_result', send_result)
+        // TODO altro test con failure su non owner
+        // await truffleAssert.reverts(mList.sendAllToOwner({from: accounts[1]}), "Not the owner")
+    })
 
     // sethashInternal
     it("It should abort with an error", async () => {

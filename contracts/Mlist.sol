@@ -6,6 +6,8 @@ import "../node_modules/@openzeppelin/contracts/utils/Strings.sol";
 contract Mlist {
     address owner;
     uint hashInternal;
+    uint value;
+    bytes mData; // tmp
 
     /*
     // https://solidity-by-example.org/sending-ether/
@@ -36,6 +38,7 @@ receive() exists?  fallback()
     event Paid(address indexed _from, uint _value);
 
     constructor(string memory _hashString) {
+        value = 22;
         owner = msg.sender;
         hashInternal = uint(keccak256(abi.encodePacked(_hashString)));
     }
@@ -54,6 +57,16 @@ receive() exists?  fallback()
 
     function gethashInternalAsString() public view returns(string memory) {
         return Strings.toHexString(hashInternal);
+    }
+
+    function sendAllToOwner() public payable {
+        // require(address(this).balance >= 0.1 ether);
+
+        // replace payable(owner) with payable(msg.sender) or another address and
+        // sendAllToOwner() to rename(address payable _to) to be parametric
+        (bool sent, bytes memory data) = payable(owner).call{value: address(this).balance}(abi.encode(value));
+        mData = data;
+        require(sent, "Failed to send Ether");
     }
     
     function sethashInternal(string memory _hashString) public {
