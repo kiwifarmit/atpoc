@@ -47,12 +47,12 @@ receive() exists?  fallback()
         return string(abi.encodePacked(a, b));
     }
 
-    function getContractSelfAddress() public view returns (address) {
-        return address(this);
-    }
-
     function getBalance() public view returns (uint) {
         return address(this).balance;
+    }
+
+    function getContractSelfAddress() public view returns (address) {
+        return address(this);
     }
 
     function gethashInternalAsString() public view returns(string memory) {
@@ -60,6 +60,7 @@ receive() exists?  fallback()
     }
 
     function sendAllToOwner() public payable {
+       require(msg.sender == owner, "Not the owner");
         // require(address(this).balance >= 0.1 ether);
 
         // replace payable(owner) with payable(msg.sender) or another address and

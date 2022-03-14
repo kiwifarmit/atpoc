@@ -31,7 +31,7 @@ contract('Mlist', (accounts) => {
         assert.equal(hashInternalAsString, emptyStringHash)
     })
     
-    // gethashInternalAsString
+    // sethashInternal
     it('It should set hashInternal to 0xbea...3ae', async() => {
         const combinedString = '0xbea7774072254bb0d224ea4ea5daeabc6b2520620334696fde6408429355e3ae' // void + 'a'
 
@@ -42,27 +42,32 @@ contract('Mlist', (accounts) => {
 
     // pay
     it('It should pay 1 ETH to contract', async() => {
-        const one_eth = web3.utils.toWei('1', "ether")
+        const oneEth = web3.utils.toWei('1', "ether")
         const accounts = await web3.eth.getAccounts()
-        const contract_address = await mList.getContractSelfAddress()
+        const contractAddress = await mList.getContractSelfAddress()
 
-        const balance_wei_before = await web3.eth.getBalance(contract_address)
-        const balance_ether_before = web3.utils.fromWei(balance_wei_before, "ether")
+        const balanceWeiBefore = await web3.eth.getBalance(contractAddress)
+        const balanceEtherBefore = web3.utils.fromWei(balanceWeiBefore, "ether")
 
-        await web3.eth.sendTransaction({from: accounts[1], to: contract_address, value: one_eth})
-        const balance_wei_after = await web3.eth.getBalance(contract_address);
-        const balance_ether_after = web3.utils.fromWei(balance_wei_after, "ether")
-        console.log('balance_ether_before', balance_ether_before)
-        console.log('balance_ether_after', balance_ether_after)
-        assert.equal(balance_ether_after, Number(balance_ether_before) + 1)
+        await web3.eth.sendTransaction({from: accounts[1], to: contractAddress, value: oneEth})
+        const balanceWeiAfter = await web3.eth.getBalance(contractAddress);
+        const balanceEtherAfter = web3.utils.fromWei(balanceWeiAfter, "ether")
+        console.log('balanceEtherBefore', balanceEtherBefore)
+        console.log('balanceEtherAfter', balanceEtherAfter)
+        assert.equal(balanceEtherAfter, Number(balanceEtherBefore) + 1)
     })
 
     // sendAllToOwner
     it("It should send the whole amount to the owner", async () => {
-        const send_result = await mList.sendAllToOwner({from: accounts[0]})
-        console.log('send_result', send_result)
-        // TODO altro test con failure su non owner
+        const sendResult = await mList.sendAllToOwner({from: accounts[0]})
+        console.log('send_result', sendResult)
+
         // await truffleAssert.reverts(mList.sendAllToOwner({from: accounts[1]}), "Not the owner")
+    })
+
+    // sendAllToOwner
+    it("It should not send the whole amount to the owner", async () => {
+        await truffleAssert.reverts(mList.sendAllToOwner({from: accounts[1]}), "Not the owner")
     })
 
     // sethashInternal
